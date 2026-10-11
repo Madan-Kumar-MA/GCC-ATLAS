@@ -15,7 +15,7 @@ export const CompanyModal: React.FC<CompanyModalProps> = ({ company, onClose, on
   if (!company) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
+    <div data-testid="company-modal" className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
       <div className="bg-white rounded-lg border border-slate-200 shadow-2xl max-w-3xl w-full max-h-[92vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
         {/* Top Header */}
         <div className="p-6 border-b border-slate-200 bg-slate-50 flex items-start justify-between">
@@ -42,6 +42,7 @@ export const CompanyModal: React.FC<CompanyModalProps> = ({ company, onClose, on
           </div>
 
           <button
+            data-testid="btn-close-company-modal"
             onClick={onClose}
             className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-200/60 rounded-sm transition-colors"
           >

@@ -11,7 +11,7 @@ export const MethodologyModal: React.FC<MethodologyModalProps> = ({ isOpen, onCl
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
+    <div data-testid="methodology-modal" className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
       <div className="bg-white rounded-lg border border-slate-200 shadow-2xl max-w-3xl w-full max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50">
@@ -23,6 +23,7 @@ export const MethodologyModal: React.FC<MethodologyModalProps> = ({ isOpen, onCl
             </div>
           </div>
           <button
+            data-testid="btn-close-methodology-modal"
             onClick={onClose}
             className="p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-200/60 rounded-sm transition-colors"
           >

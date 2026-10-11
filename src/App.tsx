@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar, NavTab } from './components/Navbar';
 import { OverviewView } from './components/OverviewView';
 import { ExplorerView } from './components/ExplorerView';
@@ -12,7 +12,7 @@ import { CompanyModal } from './components/CompanyModal';
 import { MethodologyModal } from './components/MethodologyModal';
 import { GCC_COMPANIES } from './data/gccData';
 import { GCCCompany } from './types';
-import { ShieldCheck, Info, Compass, Database, ExternalLink, ArrowRight } from 'lucide-react';
+import { ShieldCheck, Info, ArrowRight } from 'lucide-react';
 
 export default function App() {
   const [currentTab, setCurrentTab] = useState<NavTab>('overview');
@@ -22,6 +22,28 @@ export default function App() {
   const [isMethodologyOpen, setIsMethodologyOpen] = useState<boolean>(false);
   const [globalSearchQuery, setGlobalSearchQuery] = useState<string>('');
   const [aiInitialPrompt, setAiInitialPrompt] = useState<string>('');
+
+  const navigateTab = (tab: NavTab, mode: 'push' | 'replace' = 'push') => {
+    setCurrentTab(tab);
+    if (typeof window !== 'undefined') {
+      if (mode === 'push') {
+        window.history.pushState({ tab }, '', window.location.pathname);
+      } else {
+        window.history.replaceState({ tab }, '', window.location.pathname);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const syncFromHistory = (event: PopStateEvent) => {
+      const tab = event.state?.tab as NavTab | undefined;
+      const validTabs: NavTab[] = ['overview', 'explorer', 'cities', 'compare', 'wizard', 'incentives', 'providers', 'assistant'];
+      setCurrentTab(tab && validTabs.includes(tab) ? tab : 'overview');
+    };
+
+    window.addEventListener('popstate', syncFromHistory);
+    return () => window.removeEventListener('popstate', syncFromHistory);
+  }, []);
 
   const handleSelectCompany = (comp: GCCCompany) => {
     setSelectedCompany(comp);
@@ -37,31 +59,31 @@ export default function App() {
     } else {
       // Navigate to explorer with search
       setGlobalSearchQuery(companyName);
-      setCurrentTab('explorer');
+      navigateTab('explorer');
     }
   };
 
   const handleSelectCity = (cityName: string) => {
     setSelectedCityName(cityName);
-    setCurrentTab('cities');
+    navigateTab('cities');
   };
 
   const handleCompareCity = (cityId: string) => {
     if (!compareCityIds.includes(cityId)) {
       setCompareCityIds([...compareCityIds.slice(0, 3), cityId]);
     }
-    setCurrentTab('compare');
+    navigateTab('compare');
   };
 
   const handleAskAI = (prompt: string) => {
     setAiInitialPrompt(prompt);
-    setCurrentTab('assistant');
+    navigateTab('assistant');
   };
 
   const handleQuickSearch = (query: string) => {
     setGlobalSearchQuery(query);
     if (query.trim() && currentTab !== 'explorer') {
-      setCurrentTab('explorer');
+      navigateTab('explorer');
     }
   };
 
@@ -70,7 +92,7 @@ export default function App() {
       {/* Global Navigation Bar */}
       <Navbar
         currentTab={currentTab}
-        onTabChange={(tab) => setCurrentTab(tab)}
+        onTabChange={(tab) => navigateTab(tab)}
         onOpenMethodology={() => setIsMethodologyOpen(true)}
         onQuickSearch={handleQuickSearch}
         searchQuery={globalSearchQuery}
@@ -80,7 +102,7 @@ export default function App() {
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8">
         {currentTab === 'overview' && (
           <OverviewView
-            onNavigate={(tab) => setCurrentTab(tab)}
+            onNavigate={(tab) => navigateTab(tab)}
             onSelectCompany={handleSelectCompany}
             onSelectCity={handleSelectCity}
             onAskAI={handleAskAI}
@@ -165,7 +187,7 @@ export default function App() {
               </button>
               <button
                 onClick={() => {
-                  setCurrentTab('wizard');
+                  navigateTab('wizard');
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
                 className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xs transition-colors inline-flex items-center gap-1.5 text-xs font-sans"

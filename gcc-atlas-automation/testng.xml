@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="GCC Atlas Automation Suite" verbose="1">
+
+    <listeners>
+        <listener class-name="com.gccatlas.utils.TestListener"/>
+    </listeners>
+
+    <test name="GCC Atlas Full Functional Regression Suite">
+        <classes>
+            <class name="com.gccatlas.tests.DashboardTest"/>
+            <class name="com.gccatlas.tests.NavigationTest"/>
+            <class name="com.gccatlas.tests.GCCExplorerTest"/>
+            <class name="com.gccatlas.tests.CityIntelligenceTest"/>
+            <class name="com.gccatlas.tests.CompareTest"/>
+            <class name="com.gccatlas.tests.BuildGCCTest"/>
+            <class name="com.gccatlas.tests.IncentivesTest"/>
+            <class name="com.gccatlas.tests.ProvidersTest"/>
+            <class name="com.gccatlas.tests.AtlasAITest"/>
+            <class name="com.gccatlas.tests.UITest"/>
+        </classes>
+    </test>
+
+</suite>

@@ -76,7 +76,7 @@ export const ProvidersView: React.FC<ProvidersViewProps> = ({ onAskAI }) => {
   };
 
   return (
-    <div className="space-y-6 pb-16">
+    <div data-testid="providers-view" className="space-y-6 pb-16">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
@@ -94,6 +94,7 @@ export const ProvidersView: React.FC<ProvidersViewProps> = ({ onAskAI }) => {
 
         {/* Global Partner Inquiry */}
         <button
+          data-testid="btn-ask-ai-vendors"
           onClick={() => onAskAI('Which service providers in India have the strongest evidence of setting up technology GCCs in Bengaluru and Hyderabad?')}
           className="self-start md:self-auto px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium rounded-xs shadow-xs transition-colors flex items-center gap-1.5"
         >
@@ -120,6 +121,7 @@ export const ProvidersView: React.FC<ProvidersViewProps> = ({ onAskAI }) => {
           <div>
             <label className="block text-[11px] font-mono text-slate-500 mb-1">Service Category</label>
             <select
+              data-testid="filter-provider-category"
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
               className="w-full text-xs bg-slate-50 border border-slate-200 rounded-xs p-1.5 focus:border-blue-600 focus:outline-hidden text-slate-800"
@@ -134,6 +136,7 @@ export const ProvidersView: React.FC<ProvidersViewProps> = ({ onAskAI }) => {
           <div>
             <label className="block text-[11px] font-mono text-slate-500 mb-1">Evidence Strength</label>
             <select
+              data-testid="filter-provider-evidence"
               value={selectedEvidenceStrength}
               onChange={(e) => setSelectedEvidenceStrength(e.target.value)}
               className="w-full text-xs bg-slate-50 border border-slate-200 rounded-xs p-1.5 focus:border-blue-600 focus:outline-hidden text-slate-800"
@@ -149,6 +152,7 @@ export const ProvidersView: React.FC<ProvidersViewProps> = ({ onAskAI }) => {
           <div>
             <label className="block text-[11px] font-mono text-slate-500 mb-1">India Office Footprint</label>
             <select
+              data-testid="filter-provider-city"
               value={selectedCity}
               onChange={(e) => setSelectedCity(e.target.value)}
               className="w-full text-xs bg-slate-50 border border-slate-200 rounded-xs p-1.5 focus:border-blue-600 focus:outline-hidden text-slate-800"
@@ -162,6 +166,7 @@ export const ProvidersView: React.FC<ProvidersViewProps> = ({ onAskAI }) => {
           {/* Reset */}
           <div className="flex items-end">
             <button
+              data-testid="btn-reset-providers"
               onClick={resetFilters}
               className="w-full py-1.5 px-3 rounded-xs text-xs font-mono flex items-center justify-center gap-1.5 border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 transition-colors"
             >
@@ -177,19 +182,20 @@ export const ProvidersView: React.FC<ProvidersViewProps> = ({ onAskAI }) => {
         {filteredProviders.map((prov) => (
           <div
             key={prov.id}
+            data-testid={`provider-card-${prov.id}`}
             className="bg-white border border-slate-200 rounded-lg p-5 shadow-2xs hover:border-slate-300 transition-all flex flex-col justify-between space-y-4"
           >
             <div>
               {/* Header Badges */}
               <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-                <span className="font-bold text-xs font-mono bg-blue-100 text-blue-900 px-2 py-0.5 rounded-xs border border-blue-200">
+                <span data-testid="provider-category-badge" className="font-bold text-xs font-mono bg-blue-100 text-blue-900 px-2 py-0.5 rounded-xs border border-blue-200">
                   {prov.category}
                 </span>
-                {getEvidenceBadge(prov.evidenceStrength)}
+                <span data-testid="provider-evidence-badge">{getEvidenceBadge(prov.evidenceStrength)}</span>
               </div>
 
               {/* Company Name */}
-              <h3 className="font-bold text-lg text-slate-900 tracking-tight">
+              <h3 data-testid="provider-company-name" className="font-bold text-lg text-slate-900 tracking-tight">
                 {prov.company}
               </h3>
               <p className="text-xs text-slate-500 font-mono mt-0.5">

@@ -6,3 +6,6 @@ coverage/
 *.log
 .env*
 !.env.example
+/gcc-atlas-automation/target/
+/gcc-atlas-automation/logs/
+/gcc-atlas-automation/screenshots/

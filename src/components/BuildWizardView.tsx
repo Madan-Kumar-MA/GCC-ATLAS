@@ -26,37 +26,55 @@ export const BuildWizardView: React.FC<BuildWizardViewProps> = ({ onAskAI, onExp
   const [currentStep, setCurrentStep] = useState<number>(1);
 
   // Wizard state
-  const [industry, setIndustry] = useState<string>('Technology');
+  const [industry, setIndustry] = useState<string>('Technology & Software');
   const [targetScale, setTargetScale] = useState<string>('500');
-  const [priorities, setPriorities] = useState<string[]>(['Talent', 'Cost']);
+  const [customHeadcount, setCustomHeadcount] = useState<string>('');
+  const [headcountError, setHeadcountError] = useState<string>('');
+  const [costSensitivity, setCostSensitivity] = useState<string>('Balanced Growth');
+  const [talentFocus, setTalentFocus] = useState<string>('Product Engineering');
+  const [priorities, setPriorities] = useState<string[]>(['Balanced Growth', 'Product Engineering']);
   const [preferredCities, setPreferredCities] = useState<string[]>(['Any']);
 
   const [recommendation, setRecommendation] = useState<WizardRecommendation | null>(null);
 
   const industryOptions = [
-    { id: 'Technology', label: 'Technology & Enterprise Software', desc: 'Cloud, AI, SaaS, Cybersecurity & Core Engineering' },
-    { id: 'BFSI', label: 'BFSI & Quantitative Finance', desc: 'Capital markets, risk engines, payments & asset management' },
-    { id: 'Healthcare', label: 'Healthcare & Pharma Informatics', desc: 'Clinical trials data, biostatistics, medical device R&D' },
-    { id: 'Manufacturing', label: 'Manufacturing & Automotive ER&D', desc: 'Software-defined vehicles, IoT, embedded systems, avionics' },
-    { id: 'Retail', label: 'Retail & Omnichannel E-Commerce', desc: 'Supply chain graph algorithms, merchandising & retail media' },
-    { id: 'Other', label: 'General Corporate Shared Services', desc: 'Multi-function shared services, finance, HR & legal operations' }
+    { id: 'Technology & Software', label: 'Technology & Software', desc: 'Cloud, AI, SaaS, Cybersecurity & Core Engineering' },
+    { id: 'Financial Services & BFSI', label: 'Financial Services & BFSI', desc: 'Capital markets, risk engines, payments & asset management' },
+    { id: 'Healthcare & Life Sciences', label: 'Healthcare & Life Sciences', desc: 'Clinical trials data, biostatistics, medical device R&D' },
+    { id: 'Manufacturing & ER&D', label: 'Manufacturing & ER&D', desc: 'Software-defined vehicles, IoT, embedded systems, avionics' },
+    { id: 'Retail & E-Commerce', label: 'Retail & E-Commerce', desc: 'Supply chain graph algorithms, merchandising & retail media' },
+    { id: 'Shared Services', label: 'Shared Services', desc: 'Multi-function shared services, finance, HR & legal operations' }
   ];
 
   const scaleOptions = [
-    { id: '100', label: '100 Team Members', desc: 'Initial agile pod / specialized Center of Excellence' },
-    { id: '250', label: '250 Team Members', desc: 'Mid-scale product engineering & operations hub' },
-    { id: '500', label: '500 Team Members', desc: 'Strategic flagship capability center' },
-    { id: '1,000', label: '1,000 Team Members', desc: 'Large multi-functional enterprise captive' },
-    { id: '5,000+', label: '5,000+ Team Members', desc: 'Mega corporate campus with full end-to-end ownership' }
+    { id: '100', label: 'Small (100-300)', desc: 'Initial agile pod / specialized Center of Excellence' },
+    { id: '250', label: 'Medium (300-800)', desc: 'Mid-scale product engineering & operations hub' },
+    { id: '500', label: 'Large (800-2000)', desc: 'Strategic flagship capability center' },
+    { id: '1,000', label: 'Enterprise Scale', desc: 'Large multi-functional enterprise captive' },
+    { id: '5,000+', label: 'Mega Campus', desc: 'Mega corporate campus with full end-to-end ownership' }
   ];
 
   const priorityOptions = [
-    { id: 'Talent', label: 'Talent Density & Senior Leadership', desc: 'Deepest bench of architects, ML scientists, and VP-level directors' },
-    { id: 'Cost', label: 'Cost Arbitrage & Low Attrition', desc: 'Lower office rentals and competitive compensation retention' },
-    { id: 'Incentives', label: 'State Subsidies & Policy Ease', desc: 'Cash payroll subsidies, power rebates, and 15-day single-window clearance' },
-    { id: 'Ecosystem', label: 'Existing Peer Ecosystem', desc: 'Proximity to Fortune 500 peers and established vendor supply chain' },
-    { id: 'Infrastructure', label: 'Urban Infrastructure & Aviation', desc: 'Expressway access, airport connectivity, and Grade-A floorplates' },
-    { id: 'Clustering', label: 'Industry Sector Concentration', desc: 'Colocation within recognized sector hubs (e.g. BFSI in Mumbai, SaaS in Chennai)' }
+    { id: 'Balanced Growth', label: 'Balanced Growth', desc: 'Strong across talent, cost, and operating efficiency' },
+    { id: 'Cost Efficiency', label: 'Cost Efficiency', desc: 'Lower office rentals and competitive compensation retention' },
+    { id: 'Product Engineering', label: 'Product Engineering', desc: 'Deep software, cloud, and platform engineering depth' },
+    { id: 'Policy Incentives', label: 'Policy Incentives', desc: 'State subsidies, payroll rebates, and single-window clearance' },
+    { id: 'Talent Density', label: 'Talent Density', desc: 'Senior leadership, AI researchers, and proven operating talent' },
+    { id: 'Operational Infrastructure', label: 'Operational Infrastructure', desc: 'Airport access, expressways, and Grade-A workspace availability' }
+  ];
+
+  const costSensitivityOptions = [
+    { id: 'Balanced Growth', label: 'Balanced Growth', desc: 'Strong across talent, cost, and operating efficiency' },
+    { id: 'Cost Efficiency', label: 'Cost Efficiency', desc: 'Lower office rentals and competitive compensation retention' },
+    { id: 'Scale First', label: 'Scale First', desc: 'Prioritize speed-to-mission and market expansion' }
+  ];
+
+  const talentFocusOptions = [
+    { id: 'Product Engineering', label: 'Product Engineering', desc: 'Deep software, cloud, and platform engineering depth' },
+    { id: 'AI Research', label: 'AI Research', desc: 'Generative AI, ML, and data platform innovation' },
+    { id: 'Policy Incentives', label: 'Policy Incentives', desc: 'State subsidies, payroll rebates, and single-window clearance' },
+    { id: 'Talent Density', label: 'Talent Density', desc: 'Senior leadership, AI researchers, and proven operating talent' },
+    { id: 'Operational Infrastructure', label: 'Operational Infrastructure', desc: 'Airport access, expressways, and Grade-A workspace availability' }
   ];
 
   const cityFilterOptions = [
@@ -94,9 +112,9 @@ export const BuildWizardView: React.FC<BuildWizardViewProps> = ({ onAskAI, onExp
 
   const computeRecommendation = () => {
     // Recommendation logic based on verified heuristics
-    const wantsCost = priorities.includes('Cost');
-    const wantsTalent = priorities.includes('Talent');
-    const wantsIncentives = priorities.includes('Incentives');
+    const wantsCost = costSensitivity === 'Cost Efficiency' || costSensitivity === 'Balanced Growth';
+    const wantsTalent = talentFocus === 'Product Engineering' || talentFocus === 'Talent Density' || talentFocus === 'AI Research';
+    const wantsIncentives = talentFocus === 'Policy Incentives';
     const isBigScale = targetScale === '500' || targetScale === '1,000' || targetScale === '5,000+';
 
     let r1 = {
@@ -151,7 +169,7 @@ export const BuildWizardView: React.FC<BuildWizardViewProps> = ({ onAskAI, onExp
     };
 
     // Branching customizations for BFSI
-    if (industry === 'BFSI') {
+    if (industry === 'Financial Services & BFSI') {
       if (wantsCost) {
         r1.fitScore = 95;
         r1.matchReason = 'Hyderabad is India\'s fastest-growing BFSI tech corridor, housing massive hubs for Goldman Sachs (3,500+), JPMorgan Chase, and Wells Fargo.';
@@ -166,7 +184,7 @@ export const BuildWizardView: React.FC<BuildWizardViewProps> = ({ onAskAI, onExp
           cautions: ['Highest real-estate costs in India', 'Space constraints in central BKC']
         };
       }
-    } else if (industry === 'Manufacturing') {
+    } else if (industry === 'Manufacturing & ER&D') {
       r1 = {
         cityId: 'pune',
         cityName: 'Pune',
@@ -200,27 +218,33 @@ export const BuildWizardView: React.FC<BuildWizardViewProps> = ({ onAskAI, onExp
       disclaimer: 'This recommendation is an analytical prototype based on available public data and should not be treated as professional legal, tax, or commercial consulting advice.'
     };
 
+    setPriorities(Array.from(new Set([costSensitivity, talentFocus])));
+
     setRecommendation(recResult);
   };
 
   const handleReset = () => {
     setCurrentStep(1);
     setRecommendation(null);
-    setIndustry('Technology');
+    setIndustry('Technology & Software');
     setTargetScale('500');
-    setPriorities(['Talent', 'Cost']);
+    setCustomHeadcount('');
+    setHeadcountError('');
+    setCostSensitivity('Balanced Growth');
+    setTalentFocus('Product Engineering');
+    setPriorities(['Balanced Growth', 'Product Engineering']);
     setPreferredCities(['Any']);
   };
 
   return (
-    <div className="space-y-6 pb-16 max-w-4xl mx-auto">
+    <div className="space-y-6 pb-16 max-w-4xl mx-auto" data-testid="wizard-view">
       {/* Header */}
       <div className="text-center space-y-2 pb-2">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 border border-blue-200 rounded-xs text-xs font-mono text-blue-800">
           <Wand2 className="w-3.5 h-3.5 text-blue-600" />
           <span>Interactive Decision Engine</span>
         </div>
-        <h1 className="text-3xl font-black text-slate-900 tracking-tight">
+        <h1 className="text-3xl font-black text-slate-900 tracking-tight" data-testid="wizard-heading">
           Build My GCC — Site Selection Wizard
         </h1>
         <p className="text-xs text-slate-500 font-mono max-w-xl mx-auto">
@@ -229,16 +253,16 @@ export const BuildWizardView: React.FC<BuildWizardViewProps> = ({ onAskAI, onExp
       </div>
 
       {!recommendation ? (
-        <div className="bg-white border border-slate-200 rounded-lg shadow-2xs overflow-hidden">
+        <div className="bg-white border border-slate-200 rounded-lg shadow-2xs overflow-hidden" data-testid="wizard-card">
           {/* Step Progress Tracker */}
-          <div className="bg-slate-50 border-b border-slate-200 px-6 py-3.5 flex items-center justify-between text-xs font-mono">
+          <div className="bg-slate-50 border-b border-slate-200 px-6 py-3.5 flex items-center justify-between text-xs font-mono" data-testid="wizard-step-tracker">
             <div className="flex items-center gap-2">
-              <span className="font-bold text-slate-900">Step {currentStep} of 4:</span>
-              <span className="text-slate-500">
+              <span className="font-bold text-slate-900" data-testid="current-step-label">Step {currentStep} of 4:</span>
+              <span className="text-slate-500" data-testid="current-step-name">
                 {currentStep === 1 && 'Center Function & Mandate'}
                 {currentStep === 2 && 'Target Team Scale'}
-                {currentStep === 3 && 'Strategic Priority Weighting'}
-                {currentStep === 4 && 'Geographic Preferences'}
+                {currentStep === 3 && 'Cost Sensitivity'}
+                {currentStep === 4 && 'Talent Focus'}
               </span>
             </div>
             <div className="flex items-center gap-1.5">
@@ -256,7 +280,7 @@ export const BuildWizardView: React.FC<BuildWizardViewProps> = ({ onAskAI, onExp
           <div className="p-6 sm:p-8 space-y-6">
             {/* Step 1: Industry */}
             {currentStep === 1 && (
-              <div className="space-y-4 animate-in fade-in duration-150">
+              <div className="space-y-4 animate-in fade-in duration-150" data-testid="wizard-step-1">
                 <div>
                   <h3 className="text-base font-bold text-slate-900">
                     Question 1: What type of GCC are you building?
@@ -273,6 +297,7 @@ export const BuildWizardView: React.FC<BuildWizardViewProps> = ({ onAskAI, onExp
                       <div
                         key={opt.id}
                         onClick={() => setIndustry(opt.id)}
+                        data-testid={`industry-option-${opt.id}`}
                         className={`p-4 rounded-sm border cursor-pointer transition-all flex items-start gap-3 ${
                           isSelected
                             ? 'bg-blue-50/70 border-blue-600 shadow-2xs ring-1 ring-blue-600'
@@ -285,7 +310,7 @@ export const BuildWizardView: React.FC<BuildWizardViewProps> = ({ onAskAI, onExp
                           {isSelected && <Check className="w-2.5 h-2.5" />}
                         </div>
                         <div>
-                          <div className="text-xs font-bold text-slate-900">{opt.label}</div>
+                          <h3 className="text-xs font-bold text-slate-900">{opt.label}</h3>
                           <div className="text-[11px] text-slate-500 mt-1 leading-snug">{opt.desc}</div>
                         </div>
                       </div>
@@ -297,7 +322,7 @@ export const BuildWizardView: React.FC<BuildWizardViewProps> = ({ onAskAI, onExp
 
             {/* Step 2: Target Scale */}
             {currentStep === 2 && (
-              <div className="space-y-4 animate-in fade-in duration-150">
+              <div className="space-y-4 animate-in fade-in duration-150" data-testid="wizard-step-2">
                 <div>
                   <h3 className="text-base font-bold text-slate-900">
                     Question 2: What is your approximate target scale?
@@ -309,11 +334,16 @@ export const BuildWizardView: React.FC<BuildWizardViewProps> = ({ onAskAI, onExp
 
                 <div className="space-y-2.5 pt-2">
                   {scaleOptions.map((opt) => {
-                    const isSelected = targetScale === opt.id;
+                    const isSelected = targetScale === opt.id && !customHeadcount;
                     return (
                       <div
                         key={opt.id}
-                        onClick={() => setTargetScale(opt.id)}
+                        onClick={() => {
+                          setTargetScale(opt.id);
+                          setCustomHeadcount('');
+                          setHeadcountError('');
+                        }}
+                        data-testid={`scale-option-${opt.id}`}
                         className={`p-3.5 rounded-sm border cursor-pointer transition-all flex items-center justify-between ${
                           isSelected
                             ? 'bg-blue-50/70 border-blue-600 shadow-2xs ring-1 ring-blue-600'
@@ -327,7 +357,7 @@ export const BuildWizardView: React.FC<BuildWizardViewProps> = ({ onAskAI, onExp
                             {isSelected && <Check className="w-2.5 h-2.5" />}
                           </div>
                           <div>
-                            <div className="text-xs font-bold text-slate-900">{opt.label}</div>
+                            <span className="text-xs font-bold text-slate-900 block">{opt.label}</span>
                             <div className="text-[11px] text-slate-500 font-mono">{opt.desc}</div>
                           </div>
                         </div>
@@ -338,28 +368,70 @@ export const BuildWizardView: React.FC<BuildWizardViewProps> = ({ onAskAI, onExp
                     );
                   })}
                 </div>
+
+                {/* Custom Employee Headcount Input with Validation */}
+                <div className="pt-4 border-t border-slate-200 space-y-2">
+                  <label className="block text-xs font-bold text-slate-800">
+                    Or specify custom employee headcount:
+                  </label>
+                  <div className="flex gap-2 items-center">
+                    <input
+                      type="text"
+                      value={customHeadcount}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setCustomHeadcount(val);
+                        if (!val.trim()) {
+                          setHeadcountError('');
+                          return;
+                        }
+                        const num = Number(val);
+                        if (isNaN(num) || !Number.isInteger(num) || num <= 0) {
+                          setHeadcountError('Employee count must be a positive integer greater than 0');
+                        } else if (num > 100000) {
+                          setHeadcountError('Employee count exceeds supported scale (max 100,000)');
+                        } else {
+                          setHeadcountError('');
+                          setTargetScale(val.trim());
+                        }
+                      }}
+                      placeholder="e.g. 500, 750 (Positive integers only)"
+                      data-testid="custom-employees-input"
+                      className={`w-full max-w-sm px-3.5 py-2 text-xs bg-slate-50 border rounded-xs focus:outline-hidden transition-colors ${
+                        headcountError ? 'border-rose-500 bg-rose-50/40 text-rose-900' : 'border-slate-300 focus:border-blue-600 text-slate-900'
+                      }`}
+                    />
+                  </div>
+                  {headcountError && (
+                    <p className="text-xs text-rose-600 font-mono flex items-center gap-1.5 pt-0.5" data-testid="scale-error-message">
+                      <AlertCircle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                      <span>{headcountError}</span>
+                    </p>
+                  )}
+                </div>
               </div>
             )}
 
             {/* Step 3: Priorities */}
             {currentStep === 3 && (
-              <div className="space-y-4 animate-in fade-in duration-150">
+              <div className="space-y-4 animate-in fade-in duration-150" data-testid="wizard-step-3">
                 <div>
                   <h3 className="text-base font-bold text-slate-900">
-                    Question 3: What matters most to your leadership?
+                    Question 3: What cost sensitivity best fits your GCC case?
                   </h3>
                   <p className="text-xs text-slate-500 font-mono mt-0.5">
-                    Select 1 to 3 critical priorities driving your India business case
+                    Select the strategic tradeoff that best reflects your operating model
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                  {priorityOptions.map((opt) => {
-                    const isSelected = priorities.includes(opt.id);
+                  {costSensitivityOptions.map((opt) => {
+                    const isSelected = costSensitivity === opt.id;
                     return (
                       <div
                         key={opt.id}
-                        onClick={() => togglePriority(opt.id)}
+                        onClick={() => setCostSensitivity(opt.id)}
+                        data-testid={`cost-option-${opt.id}`}
                         className={`p-4 rounded-sm border cursor-pointer transition-all flex items-start gap-3 ${
                           isSelected
                             ? 'bg-blue-50/70 border-blue-600 shadow-2xs ring-1 ring-blue-600'
@@ -372,7 +444,7 @@ export const BuildWizardView: React.FC<BuildWizardViewProps> = ({ onAskAI, onExp
                           {isSelected && <Check className="w-3 h-3" />}
                         </div>
                         <div>
-                          <div className="text-xs font-bold text-slate-900">{opt.label}</div>
+                          <h3 className="text-xs font-bold text-slate-900">{opt.label}</h3>
                           <div className="text-[11px] text-slate-500 mt-1 leading-snug">{opt.desc}</div>
                         </div>
                       </div>
@@ -384,32 +456,40 @@ export const BuildWizardView: React.FC<BuildWizardViewProps> = ({ onAskAI, onExp
 
             {/* Step 4: Preferred Cities */}
             {currentStep === 4 && (
-              <div className="space-y-4 animate-in fade-in duration-150">
+              <div className="space-y-4 animate-in fade-in duration-150" data-testid="wizard-step-4">
                 <div>
                   <h3 className="text-base font-bold text-slate-900">
-                    Question 4: Do you have initial city preferences?
+                    Question 4: What is your strongest talent focus?
                   </h3>
                   <p className="text-xs text-slate-500 font-mono mt-0.5">
-                    Select "Any" to evaluate all 6 hubs objectively, or restrict candidate consideration
+                    Pick the operating theme most central to your GCC mandate
                   </p>
                 </div>
 
-                <div className="flex flex-wrap gap-2 pt-2">
-                  {cityFilterOptions.map((city) => {
-                    const isSelected = preferredCities.includes(city);
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                  {talentFocusOptions.map((opt) => {
+                    const isSelected = talentFocus === opt.id;
                     return (
-                      <button
-                        key={city}
-                        onClick={() => togglePreferredCity(city)}
-                        className={`px-4 py-2.5 rounded-sm text-xs font-mono border transition-all flex items-center gap-2 ${
+                      <div
+                        key={opt.id}
+                        onClick={() => setTalentFocus(opt.id)}
+                        data-testid={`talent-option-${opt.id}`}
+                        className={`p-4 rounded-sm border cursor-pointer transition-all flex items-start gap-3 ${
                           isSelected
-                            ? 'bg-blue-900 text-white border-blue-900 font-bold shadow-2xs'
-                            : 'bg-slate-50 text-slate-700 hover:bg-slate-100 border-slate-200'
+                            ? 'bg-blue-50/70 border-blue-600 shadow-2xs ring-1 ring-blue-600'
+                            : 'bg-slate-50/50 border-slate-200 hover:bg-slate-100 hover:border-slate-300'
                         }`}
                       >
-                        {isSelected && <Check className="w-3.5 h-3.5 text-emerald-400" />}
-                        <span>{city}</span>
-                      </button>
+                        <div className={`w-4 h-4 rounded-full mt-0.5 flex items-center justify-center border shrink-0 ${
+                          isSelected ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-300 bg-white'
+                        }`}>
+                          {isSelected && <Check className="w-2.5 h-2.5" />}
+                        </div>
+                        <div>
+                          <h3 className="text-xs font-bold text-slate-900">{opt.label}</h3>
+                          <div className="text-[11px] text-slate-500 mt-1 leading-snug">{opt.desc}</div>
+                        </div>
+                      </div>
                     );
                   })}
                 </div>
@@ -422,7 +502,8 @@ export const BuildWizardView: React.FC<BuildWizardViewProps> = ({ onAskAI, onExp
             {currentStep > 1 ? (
               <button
                 onClick={() => setCurrentStep(currentStep - 1)}
-                className="px-4 py-2 text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 rounded-xs transition-colors"
+                data-testid="btn-wizard-back"
+                className="px-4 py-2 text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 rounded-xs transition-colors cursor-pointer"
               >
                 Back
               </button>
@@ -430,8 +511,13 @@ export const BuildWizardView: React.FC<BuildWizardViewProps> = ({ onAskAI, onExp
 
             {currentStep < 4 ? (
               <button
-                onClick={() => setCurrentStep(currentStep + 1)}
-                className="px-5 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium rounded-xs shadow-xs transition-colors flex items-center gap-1.5"
+                onClick={() => {
+                  if (currentStep === 2 && headcountError) return;
+                  setCurrentStep(currentStep + 1);
+                }}
+                disabled={currentStep === 2 && Boolean(headcountError)}
+                data-testid="btn-wizard-continue"
+                className="px-5 py-2 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white text-xs font-medium rounded-xs shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
               >
                 <span>Continue</span>
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -439,7 +525,8 @@ export const BuildWizardView: React.FC<BuildWizardViewProps> = ({ onAskAI, onExp
             ) : (
               <button
                 onClick={computeRecommendation}
-                className="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xs shadow-md transition-colors flex items-center gap-2"
+                data-testid="btn-wizard-generate"
+                className="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xs shadow-md transition-colors flex items-center gap-2 cursor-pointer"
               >
                 <Sparkles className="w-4 h-4" />
                 <span>Generate Decision Shortlist</span>
@@ -449,9 +536,9 @@ export const BuildWizardView: React.FC<BuildWizardViewProps> = ({ onAskAI, onExp
         </div>
       ) : (
         /* Results View */
-        <div className="space-y-6 animate-in fade-in duration-200">
+        <div className="space-y-6 animate-in fade-in duration-200" data-testid="wizard-results-container">
           {/* Shortlist Card */}
-          <div className="bg-white border border-slate-200 rounded-lg p-6 sm:p-8 shadow-xs space-y-6">
+          <div className="bg-white border border-slate-200 rounded-lg p-6 sm:p-8 shadow-xs space-y-6" data-testid="wizard-results-card">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
               <div>
                 <span className="text-[11px] font-mono uppercase font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-xs border border-blue-200">
@@ -463,7 +550,8 @@ export const BuildWizardView: React.FC<BuildWizardViewProps> = ({ onAskAI, onExp
               </div>
               <button
                 onClick={handleReset}
-                className="self-start sm:self-auto text-xs font-mono text-slate-500 hover:text-slate-800 flex items-center gap-1 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xs transition-colors"
+                data-testid="btn-wizard-rerun"
+                className="self-start sm:self-auto text-xs font-mono text-slate-500 hover:text-slate-800 flex items-center gap-1 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xs transition-colors cursor-pointer"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>Re-run Wizard</span>
@@ -499,6 +587,7 @@ export const BuildWizardView: React.FC<BuildWizardViewProps> = ({ onAskAI, onExp
               {recommendation.shortlist.map((c) => (
                 <div
                   key={c.cityId}
+                  data-testid={`recommendation-rank-${c.rank}`}
                   className={`p-5 rounded-md border transition-all ${
                     c.rank === 1
                       ? 'border-blue-500 bg-blue-50/20 shadow-xs'
@@ -513,7 +602,7 @@ export const BuildWizardView: React.FC<BuildWizardViewProps> = ({ onAskAI, onExp
                         #{c.rank}
                       </span>
                       <div>
-                        <h4 className="text-lg font-bold text-slate-900">{c.cityName}</h4>
+                        <h4 className="text-lg font-bold text-slate-900" data-testid={c.rank === 1 ? "top-recommended-city" : `recommendation-city-${c.cityId}`}>{c.cityName}</h4>
                       </div>
                     </div>
 

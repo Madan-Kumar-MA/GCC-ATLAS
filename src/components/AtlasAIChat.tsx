@@ -214,7 +214,7 @@ High (Awaiting new inquiry).`,
   };
 
   return (
-    <div className="space-y-6 pb-16 max-w-4xl mx-auto">
+    <div data-testid="atlas-ai-chat-view" className="space-y-6 pb-16 max-w-4xl mx-auto">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
         <div>
@@ -233,6 +233,7 @@ High (Awaiting new inquiry).`,
         </div>
 
         <button
+          data-testid="btn-clear-chat"
           onClick={handleReset}
           className="self-start sm:self-auto text-xs font-mono text-slate-500 hover:text-slate-900 flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xs transition-colors"
         >
@@ -250,6 +251,7 @@ High (Awaiting new inquiry).`,
           {samplePrompts.map((sp, idx) => (
             <button
               key={idx}
+              data-testid={`sample-prompt-btn-${idx}`}
               onClick={() => handleSendQuery(sp)}
               className="p-2.5 text-left text-xs bg-white hover:bg-blue-50/70 border border-slate-200 hover:border-blue-400 rounded-sm text-slate-700 hover:text-blue-900 transition-all shadow-2xs group flex items-start gap-2"
             >
@@ -263,12 +265,13 @@ High (Awaiting new inquiry).`,
       {/* Chat Messages Container */}
       <div className="bg-white border border-slate-200 rounded-lg shadow-2xs overflow-hidden flex flex-col min-h-[500px]">
         {/* Messages Stream */}
-        <div className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
+        <div data-testid="chat-messages-container" className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
           {messages.map((msg) => {
             const isUser = msg.role === 'user';
             return (
               <div
                 key={msg.id}
+                data-testid={isUser ? 'user-message-bubble' : 'ai-message-bubble'}
                 className={`flex gap-3 ${isUser ? 'justify-end' : 'justify-start'}`}
               >
                 {!isUser && (
@@ -323,7 +326,7 @@ High (Awaiting new inquiry).`,
           })}
 
           {isLoading && (
-            <div className="flex items-start gap-3">
+            <div data-testid="ai-loading-indicator" className="flex items-start gap-3">
               <div className="w-8 h-8 rounded-xs bg-blue-900 text-white flex items-center justify-center shrink-0">
                 <Bot className="w-4 h-4 text-blue-300" />
               </div>
@@ -347,6 +350,7 @@ High (Awaiting new inquiry).`,
             className="flex items-center gap-2"
           >
             <input
+              data-testid="ai-prompt-input"
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -355,6 +359,7 @@ High (Awaiting new inquiry).`,
               className="flex-1 bg-white border border-slate-200 focus:border-blue-600 rounded-xs px-3.5 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-hidden transition-colors"
             />
             <button
+              data-testid="btn-submit-prompt"
               type="submit"
               disabled={!input.trim() || isLoading}
               className="px-4 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-200 disabled:text-slate-400 text-white font-medium text-xs rounded-xs shadow-xs transition-colors flex items-center gap-1.5 shrink-0"

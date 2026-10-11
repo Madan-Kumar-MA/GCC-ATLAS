@@ -17,7 +17,7 @@ export const CITIES_DATA: CityProfile[] = [
       operationsAndSharedServices: { rating: 'High', notes: 'Extensive ecosystem of experienced global capability directors and VP-level leaders.' }
     },
     costs: {
-      officeRentalPerSqFt: '₹95 – ₹160/sq.ft/month',
+      officeRentalPerSqFt: '₹95 - ₹160/sq.ft/month',
       officeCostLevel: 'High',
       talentCostLevel: 'High',
       operatingCostLevel: 'High',
@@ -71,7 +71,7 @@ export const CITIES_DATA: CityProfile[] = [
       operationsAndSharedServices: { rating: 'Very High', notes: 'Established legacy of large-scale corporate operations, risk monitoring, and cloud services.' }
     },
     costs: {
-      officeRentalPerSqFt: '₹70 – ₹105/sq.ft/month',
+      officeRentalPerSqFt: '₹70 - ₹105/sq.ft/month',
       officeCostLevel: 'Medium',
       talentCostLevel: 'Medium',
       operatingCostLevel: 'Medium',

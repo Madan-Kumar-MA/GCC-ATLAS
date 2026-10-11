@@ -1,15 +1,24 @@
 import express from 'express';
 import { createServer as createViteServer } from 'vite';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import { GoogleGenAI } from '@google/genai';
 
-dotenv.config();
+const rootDir = path.dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: path.join(rootDir, '.env') });
 
 const app = express();
-const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+const parsedPort = parseInt(process.env.PORT ?? '', 10);
+const PORT = Number.isFinite(parsedPort) ? parsedPort : 3000;
 
 app.use(express.json());
+app.use((err: unknown, _req: express.Request, res: express.Response, next: express.NextFunction) => {
+  if (err instanceof SyntaxError) {
+    return res.status(400).json({ error: 'Invalid JSON body' });
+  }
+  return next(err);
+});
 
 // GCC System Knowledge base summary for Atlas AI prompt grounding
 const GCC_SYSTEM_KNOWLEDGE = `
@@ -262,13 +271,14 @@ app.post('/api/assistant', async (req, res) => {
 
 async function start() {
   if (process.env.NODE_ENV === 'production') {
-    const distPath = path.resolve('dist');
+    const distPath = path.join(rootDir, 'dist');
     app.use(express.static(distPath));
-    app.get('*', (req, res) => {
-      res.sendFile(path.resolve(distPath, 'index.html'));
+    app.get(/^(?!\/api).*/, (_req, res) => {
+      res.sendFile(path.join(distPath, 'index.html'));
     });
   } else {
     const vite = await createViteServer({
+      root: rootDir,
       server: { middlewareMode: true },
       appType: 'spa',
     });
@@ -276,7 +286,7 @@ async function start() {
   }
 
   app.listen(PORT, '0.0.0.0', () => {
-    console.log(`[GCC Atlas] Fullstack Intelligence Platform active on http://0.0.0.0:${PORT}`);
+    console.log(`[GCC Atlas] Fullstack Intelligence Platform active on http://localhost:${PORT}`);
   });
 }
 

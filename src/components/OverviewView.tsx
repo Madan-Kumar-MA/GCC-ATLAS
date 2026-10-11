@@ -85,9 +85,9 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
     : RECENT_GCC_SIGNALS.filter(s => s.industry.toLowerCase().includes(activeSignalFilter.toLowerCase()));
 
   return (
-    <div className="space-y-10 pb-16">
+    <div className="space-y-10 pb-16" data-testid="overview-view">
       {/* 1. Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-slate-900 to-slate-950 text-white rounded-lg p-6 sm:p-10 border border-slate-800 shadow-xl">
+      <section className="relative overflow-hidden bg-gradient-to-b from-slate-900 to-slate-950 text-white rounded-lg p-6 sm:p-10 border border-slate-800 shadow-xl" data-testid="hero-section">
         <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10 max-w-4xl space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-900/60 border border-blue-700/60 rounded-xs text-xs font-mono text-blue-300">
@@ -95,8 +95,8 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
             <span>Decision-Ready India GCC Intelligence Layer</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white leading-tight">
-            India’s GCC ecosystem, mapped.
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white leading-tight" data-testid="hero-heading">
+            Global Capability Centres: India’s GCC ecosystem, mapped.
           </h1>
 
           <p className="text-slate-300 text-sm sm:text-base leading-relaxed max-w-2xl">
@@ -107,21 +107,24 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <button
               onClick={() => onNavigate('explorer')}
-              className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xs shadow-sm transition-all flex items-center gap-2"
+              data-testid="btn-hero-explore"
+              className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xs shadow-sm transition-all flex items-center gap-2 cursor-pointer"
             >
               <span>Explore GCC Database</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => onNavigate('compare')}
-              className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white text-xs font-semibold rounded-xs transition-all flex items-center gap-2"
+              data-testid="btn-hero-compare"
+              className="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white text-xs font-semibold rounded-xs transition-all flex items-center gap-2 cursor-pointer"
             >
               <span>Compare Cities</span>
               <ChevronRight className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={() => onNavigate('wizard')}
-              className="px-5 py-2.5 bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-medium rounded-xs transition-all flex items-center gap-2"
+              data-testid="btn-hero-wizard"
+              className="px-5 py-2.5 bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-medium rounded-xs transition-all flex items-center gap-2 cursor-pointer"
             >
               <Sparkles className="w-3.5 h-3.5 text-blue-400" />
               <span>Run "Build My GCC" Wizard</span>
@@ -138,7 +141,8 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
                 <button
                   key={idx}
                   onClick={() => onAskAI(q)}
-                  className="text-xs text-left px-3 py-1.5 bg-slate-800/90 hover:bg-blue-900/60 border border-slate-700/80 hover:border-blue-600 text-slate-300 hover:text-white rounded-xs transition-all inline-flex items-center gap-1.5"
+                  data-testid={`quick-prompt-btn-${idx}`}
+                  className="text-xs text-left px-3 py-1.5 bg-slate-800/90 hover:bg-blue-900/60 border border-slate-700/80 hover:border-blue-600 text-slate-300 hover:text-white rounded-xs transition-all inline-flex items-center gap-1.5 cursor-pointer"
                 >
                   <Search className="w-3 h-3 text-slate-400" />
                   <span>"{q}"</span>
@@ -150,7 +154,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
       </section>
 
       {/* 2. KPI Cards */}
-      <section className="space-y-3">
+      <section className="space-y-3" data-testid="kpi-section">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-mono font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
             <BarChart3 className="w-4 h-4 text-blue-600" />
@@ -162,12 +166,12 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="p-4 bg-white border border-slate-200 rounded-sm shadow-2xs hover:border-slate-300 transition-colors">
+          <div className="p-4 bg-white border border-slate-200 rounded-sm shadow-2xs hover:border-slate-300 transition-colors" data-testid="kpi-tracked-gccs">
             <div className="flex items-center justify-between mb-1">
               <span className="text-xs font-mono text-slate-500 uppercase">GCCs Tracked</span>
               <ConfidenceBadge level="Estimated" showLabel={false} />
             </div>
-            <div className="text-2xl font-bold font-mono text-slate-900 tracking-tight">
+            <div className="text-2xl font-bold font-mono text-slate-900 tracking-tight" data-testid="kpi-tracked-gccs-value">
               {MACRO_STATISTICS.trackedGCCsCount}
             </div>
             <p className="text-[11px] text-slate-500 mt-1">
@@ -175,12 +179,12 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
             </p>
           </div>
 
-          <div className="p-4 bg-white border border-slate-200 rounded-sm shadow-2xs hover:border-slate-300 transition-colors">
+          <div className="p-4 bg-white border border-slate-200 rounded-sm shadow-2xs hover:border-slate-300 transition-colors" data-testid="kpi-tier1-cities">
             <div className="flex items-center justify-between mb-1">
               <span className="text-xs font-mono text-slate-500 uppercase">Tier-1 Metros Profiled</span>
               <ConfidenceBadge level="High" showLabel={false} />
             </div>
-            <div className="text-2xl font-bold font-mono text-slate-900 tracking-tight">
+            <div className="text-2xl font-bold font-mono text-slate-900 tracking-tight" data-testid="kpi-tier1-cities-value">
               {MACRO_STATISTICS.tier1CitiesCount} Cities
             </div>
             <p className="text-[11px] text-slate-500 mt-1">
@@ -188,12 +192,12 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
             </p>
           </div>
 
-          <div className="p-4 bg-white border border-slate-200 rounded-sm shadow-2xs hover:border-slate-300 transition-colors">
+          <div className="p-4 bg-white border border-slate-200 rounded-sm shadow-2xs hover:border-slate-300 transition-colors" data-testid="kpi-talent-pool">
             <div className="flex items-center justify-between mb-1">
               <span className="text-xs font-mono text-slate-500 uppercase">Installed Talent Pool</span>
               <ConfidenceBadge level="Medium" showLabel={false} />
             </div>
-            <div className="text-2xl font-bold font-mono text-slate-900 tracking-tight">
+            <div className="text-2xl font-bold font-mono text-slate-900 tracking-tight" data-testid="kpi-talent-pool-value">
               {MACRO_STATISTICS.talentPoolInstalled}
             </div>
             <p className="text-[11px] text-slate-500 mt-1">
@@ -201,12 +205,12 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
             </p>
           </div>
 
-          <div className="p-4 bg-white border border-slate-200 rounded-sm shadow-2xs hover:border-slate-300 transition-colors">
+          <div className="p-4 bg-white border border-slate-200 rounded-sm shadow-2xs hover:border-slate-300 transition-colors" data-testid="kpi-export-value">
             <div className="flex items-center justify-between mb-1">
               <span className="text-xs font-mono text-slate-500 uppercase">Annual Export Value</span>
               <ConfidenceBadge level="Medium" showLabel={false} />
             </div>
-            <div className="text-2xl font-bold font-mono text-slate-900 tracking-tight">
+            <div className="text-2xl font-bold font-mono text-slate-900 tracking-tight" data-testid="kpi-export-value-value">
               {MACRO_STATISTICS.marketEconomicOutput}
             </div>
             <p className="text-[11px] text-slate-500 mt-1">
@@ -217,7 +221,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
       </section>
 
       {/* 3. CORE PRODUCT DIFFERENTIATOR: Why GCC Numbers Differ (Section 18) */}
-      <section className="bg-slate-50 border border-blue-200/80 rounded-lg p-5 sm:p-6 shadow-xs space-y-4">
+      <section className="bg-slate-50 border border-blue-200/80 rounded-lg p-5 sm:p-6 shadow-xs space-y-4" data-testid="discrepancy-section">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-xs bg-blue-100 text-blue-800 flex items-center justify-center font-bold">
@@ -270,9 +274,9 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
       </section>
 
       {/* 4. Visual Analytics: City Presence & Industry Concentration */}
-      <section className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <section className="grid grid-cols-1 lg:grid-cols-12 gap-6" data-testid="visual-analytics-section">
         {/* City Presence Bar Chart */}
-        <div className="lg:col-span-7 bg-white p-5 border border-slate-200 rounded-lg shadow-2xs space-y-4">
+        <div className="lg:col-span-7 bg-white p-5 border border-slate-200 rounded-lg shadow-2xs space-y-4" data-testid="city-presence-section">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-bold text-sm text-slate-900 flex items-center gap-2">
@@ -283,13 +287,14 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
             </div>
             <button
               onClick={() => onNavigate('compare')}
-              className="text-xs text-blue-600 hover:text-blue-800 font-semibold inline-flex items-center gap-1"
+              data-testid="btn-compare-all"
+              className="text-xs text-blue-600 hover:text-blue-800 font-semibold inline-flex items-center gap-1 cursor-pointer"
             >
               Compare All <ArrowRight className="w-3 h-3" />
             </button>
           </div>
 
-          <div className="h-64 w-full">
+          <div className="h-64 w-full" data-testid="city-presence-chart-container">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={cityPresenceData} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
@@ -309,6 +314,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
               <div
                 key={c.id}
                 onClick={() => onSelectCity(c.name)}
+                data-testid={`city-chip-${c.id}`}
                 className="p-1.5 rounded-xs hover:bg-slate-50 cursor-pointer border border-transparent hover:border-slate-200 transition-colors"
               >
                 <div className="font-semibold text-slate-900 text-[11px] truncate">{c.name}</div>
@@ -319,7 +325,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
         </div>
 
         {/* Industry Distribution Chart */}
-        <div className="lg:col-span-5 bg-white p-5 border border-slate-200 rounded-lg shadow-2xs space-y-4">
+        <div className="lg:col-span-5 bg-white p-5 border border-slate-200 rounded-lg shadow-2xs space-y-4" data-testid="industry-chart-section">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-bold text-sm text-slate-900 flex items-center gap-2">
@@ -330,7 +336,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
             </div>
           </div>
 
-          <div className="h-52 w-full flex items-center justify-center">
+          <div className="h-52 w-full flex items-center justify-center" data-testid="industry-pie-chart-container">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -367,7 +373,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
       </section>
 
       {/* 5. Recent GCC Activity & Expansion Signals Feed */}
-      <section className="bg-white border border-slate-200 rounded-lg p-5 sm:p-6 shadow-2xs space-y-4">
+      <section className="bg-white border border-slate-200 rounded-lg p-5 sm:p-6 shadow-2xs space-y-4" data-testid="recent-signals-section">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
           <div>
             <h3 className="font-bold text-base text-slate-900 flex items-center gap-2">
@@ -385,7 +391,8 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
               <button
                 key={f}
                 onClick={() => setActiveSignalFilter(f)}
-                className={`px-2.5 py-1 text-xs rounded-xs font-mono transition-colors ${
+                data-testid={`signal-filter-${f.toLowerCase()}`}
+                className={`px-2.5 py-1 text-xs rounded-xs font-mono transition-colors cursor-pointer ${
                   activeSignalFilter === f
                     ? 'bg-blue-900 text-white font-medium'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
@@ -401,6 +408,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
           {filteredSignals.map((sig) => (
             <div
               key={sig.id}
+              data-testid={`signal-card-${sig.id}`}
               className="p-3.5 border border-slate-200 rounded-sm hover:border-blue-300 hover:shadow-xs transition-all bg-slate-50/40 flex flex-col justify-between"
             >
               <div>
@@ -452,7 +460,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
       </section>
 
       {/* 6. Featured Marquee GCC Profiles Section */}
-      <section className="space-y-4">
+      <section className="space-y-4" data-testid="featured-gccs-section">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="font-bold text-base text-slate-900 flex items-center gap-2">
@@ -465,7 +473,8 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
           </div>
           <button
             onClick={() => onNavigate('explorer')}
-            className="text-xs text-blue-600 hover:text-blue-800 font-semibold inline-flex items-center gap-1"
+            data-testid="btn-featured-view-all"
+            className="text-xs text-blue-600 hover:text-blue-800 font-semibold inline-flex items-center gap-1 cursor-pointer"
           >
             View All ({GCC_COMPANIES.length}) <ArrowRight className="w-3 h-3" />
           </button>
@@ -476,6 +485,7 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
             <div
               key={comp.id}
               onClick={() => onSelectCompany(comp)}
+              data-testid={`featured-card-${comp.id}`}
               className="p-4 bg-white border border-slate-200 rounded-sm hover:border-blue-400 hover:shadow-xs transition-all cursor-pointer flex flex-col justify-between group"
             >
               <div>

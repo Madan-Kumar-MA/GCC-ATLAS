@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   GitCompare,
   Check,
@@ -33,6 +33,12 @@ export const CityCompareView: React.FC<CityCompareViewProps> = ({
   const [selectedIds, setSelectedIds] = useState<string[]>(
     initialCityIds.length >= 2 ? initialCityIds : ['bengaluru', 'hyderabad', 'chennai']
   );
+
+  useEffect(() => {
+    if (initialCityIds.length >= 2) {
+      setSelectedIds(initialCityIds.slice(0, 4));
+    }
+  }, [initialCityIds]);
 
   // Strategy Priority Preset: Balanced, Cost-First, DeepTech-First, RapidScale
   const [priorityPreset, setPriorityPreset] = useState<'balanced' | 'cost' | 'deeptech' | 'rapidscale'>('balanced');
@@ -163,13 +169,13 @@ export const CityCompareView: React.FC<CityCompareViewProps> = ({
   };
 
   return (
-    <div className="space-y-6 pb-16">
+    <div className="space-y-6 pb-16" data-testid="compare-view">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
           <div className="flex items-center gap-2">
             <GitCompare className="w-5 h-5 text-blue-600" />
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">City Comparison Matrix</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900" data-testid="compare-heading">City Comparison Matrix</h1>
             <span className="text-xs font-mono bg-blue-50 text-blue-800 px-2 py-0.5 rounded-xs border border-blue-200">
               Interactive Matrix
             </span>
@@ -180,7 +186,7 @@ export const CityCompareView: React.FC<CityCompareViewProps> = ({
         </div>
 
         {/* City Toggle Selector Chips */}
-        <div className="flex flex-wrap items-center gap-1.5 self-start md:self-auto">
+        <div className="flex flex-wrap items-center gap-1.5 self-start md:self-auto" data-testid="city-chips-selector">
           <span className="text-[11px] font-mono text-slate-500 mr-1">Select 2–4 Hubs:</span>
           {CITIES_DATA.map((c) => {
             const isSelected = selectedIds.includes(c.id);
@@ -188,7 +194,8 @@ export const CityCompareView: React.FC<CityCompareViewProps> = ({
               <button
                 key={c.id}
                 onClick={() => toggleCity(c.id)}
-                className={`px-2.5 py-1 text-xs font-mono rounded-xs border transition-all flex items-center gap-1 ${
+                data-testid={`compare-chip-${c.id}`}
+                className={`px-2.5 py-1 text-xs font-mono rounded-xs border transition-all flex items-center gap-1 cursor-pointer ${
                   isSelected
                     ? 'bg-blue-900 text-white border-blue-900 font-semibold'
                     : 'bg-white text-slate-600 hover:text-slate-900 border-slate-200 hover:border-slate-300'
@@ -203,7 +210,7 @@ export const CityCompareView: React.FC<CityCompareViewProps> = ({
       </div>
 
       {/* Strategic Priority Presets */}
-      <div className="bg-white p-4 border border-slate-200 rounded-lg shadow-2xs space-y-3">
+      <div className="bg-white p-4 border border-slate-200 rounded-lg shadow-2xs space-y-3" data-testid="presets-container">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-2">
           <div className="flex items-center gap-2">
             <Sliders className="w-4 h-4 text-slate-600" />
@@ -219,7 +226,8 @@ export const CityCompareView: React.FC<CityCompareViewProps> = ({
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           <button
             onClick={() => setPriorityPreset('balanced')}
-            className={`p-2.5 rounded-xs border text-left transition-all ${
+            data-testid="preset-balanced"
+            className={`p-2.5 rounded-xs border text-left transition-all cursor-pointer ${
               priorityPreset === 'balanced'
                 ? 'bg-blue-50 border-blue-600 text-blue-950 font-semibold shadow-2xs'
                 : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
@@ -231,7 +239,8 @@ export const CityCompareView: React.FC<CityCompareViewProps> = ({
 
           <button
             onClick={() => setPriorityPreset('cost')}
-            className={`p-2.5 rounded-xs border text-left transition-all ${
+            data-testid="preset-cost"
+            className={`p-2.5 rounded-xs border text-left transition-all cursor-pointer ${
               priorityPreset === 'cost'
                 ? 'bg-blue-50 border-blue-600 text-blue-950 font-semibold shadow-2xs'
                 : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
@@ -243,7 +252,8 @@ export const CityCompareView: React.FC<CityCompareViewProps> = ({
 
           <button
             onClick={() => setPriorityPreset('deeptech')}
-            className={`p-2.5 rounded-xs border text-left transition-all ${
+            data-testid="preset-deeptech"
+            className={`p-2.5 rounded-xs border text-left transition-all cursor-pointer ${
               priorityPreset === 'deeptech'
                 ? 'bg-blue-50 border-blue-600 text-blue-950 font-semibold shadow-2xs'
                 : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
@@ -255,7 +265,8 @@ export const CityCompareView: React.FC<CityCompareViewProps> = ({
 
           <button
             onClick={() => setPriorityPreset('rapidscale')}
-            className={`p-2.5 rounded-xs border text-left transition-all ${
+            data-testid="preset-rapidscale"
+            className={`p-2.5 rounded-xs border text-left transition-all cursor-pointer ${
               priorityPreset === 'rapidscale'
                 ? 'bg-blue-50 border-blue-600 text-blue-950 font-semibold shadow-2xs'
                 : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
@@ -268,7 +279,7 @@ export const CityCompareView: React.FC<CityCompareViewProps> = ({
       </div>
 
       {/* AI Recommendation Banner */}
-      <div className="bg-gradient-to-r from-blue-900 to-slate-900 text-white rounded-lg p-5 sm:p-6 shadow-md border border-blue-800 space-y-3">
+      <div className="bg-gradient-to-r from-blue-900 to-slate-900 text-white rounded-lg p-5 sm:p-6 shadow-md border border-blue-800 space-y-3" data-testid="ai-recommendation-box">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-blue-400" />
@@ -281,14 +292,14 @@ export const CityCompareView: React.FC<CityCompareViewProps> = ({
           </span>
         </div>
 
-        <p className="text-sm sm:text-base leading-relaxed text-slate-200 font-medium">
+        <p className="text-sm sm:text-base leading-relaxed text-slate-200 font-medium" data-testid="ai-recommendation-text">
           {getRecommendationRationale()}
         </p>
 
         <div className="pt-2 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-3 text-xs font-mono">
             {cityScores.map(({ city, totalScore }, idx) => (
-              <span key={city.id} className="flex items-center gap-1">
+              <span key={city.id} className="flex items-center gap-1" data-testid={`city-score-${city.id}`}>
                 <span className={`w-2 h-2 rounded-full ${idx === 0 ? 'bg-emerald-400' : 'bg-slate-400'}`} />
                 <span className="text-slate-300">{city.name}:</span>
                 <span className="font-bold text-white">{totalScore}/100</span>
@@ -298,7 +309,7 @@ export const CityCompareView: React.FC<CityCompareViewProps> = ({
 
           <button
             onClick={() => onAskAI(`Compare ${selectedCities.map(c => c.name).join(' vs ')} for a new GCC establishment. What are the key decision criteria?`)}
-            className="text-xs font-mono text-blue-300 hover:text-white underline decoration-blue-500 inline-flex items-center gap-1 transition-colors"
+            className="text-xs font-mono text-blue-300 hover:text-white underline decoration-blue-500 inline-flex items-center gap-1 transition-colors cursor-pointer"
           >
             Ask Atlas AI to elaborate on this comparison <ArrowRight className="w-3.5 h-3.5" />
           </button>
@@ -306,7 +317,7 @@ export const CityCompareView: React.FC<CityCompareViewProps> = ({
       </div>
 
       {/* Side-by-Side Comparison Table */}
-      <div className="bg-white border border-slate-200 rounded-lg shadow-2xs overflow-hidden">
+      <div className="bg-white border border-slate-200 rounded-lg shadow-2xs overflow-hidden" data-testid="comparison-table-container">
         <div className="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Award className="w-4 h-4 text-blue-600" />
@@ -320,7 +331,7 @@ export const CityCompareView: React.FC<CityCompareViewProps> = ({
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs border-collapse">
+          <table className="w-full text-left text-xs border-collapse" data-testid="comparison-table">
             <thead>
               <tr className="bg-slate-100/70 border-b border-slate-200 font-mono text-slate-700">
                 <th className="py-3 px-4 w-44 font-bold text-slate-900 uppercase tracking-wider text-[11px]">
@@ -329,7 +340,7 @@ export const CityCompareView: React.FC<CityCompareViewProps> = ({
                 {selectedCities.map((c) => {
                   const scoreObj = cityScores.find((cs) => cs.city.id === c.id);
                   return (
-                    <th key={c.id} className="py-3 px-4 font-bold text-slate-900 min-w-48">
+                    <th key={c.id} data-testid={`compare-col-${c.id}`} className="py-3 px-4 font-bold text-slate-900 min-w-48">
                       <div className="flex items-center justify-between">
                         <span className="text-sm font-sans font-bold">{c.name}</span>
                         {scoreObj && (

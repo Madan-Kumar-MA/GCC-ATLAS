@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   Search,
   Filter,
@@ -34,6 +34,10 @@ export const ExplorerView: React.FC<ExplorerViewProps> = ({
   const [selectedScale, setSelectedScale] = useState<string>('All');
   const [selectedFunction, setSelectedFunction] = useState<string>('All');
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+
+  useEffect(() => {
+    setSearch(initialSearchQuery);
+  }, [initialSearchQuery]);
 
   // Extract unique filter options
   const cityOptions = useMemo(() => {
@@ -124,13 +128,13 @@ export const ExplorerView: React.FC<ExplorerViewProps> = ({
     selectedFunction !== 'All';
 
   return (
-    <div className="space-y-6 pb-16">
+    <div className="space-y-6 pb-16" data-testid="explorer-view">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
           <div className="flex items-center gap-2">
             <Building2 className="w-5 h-5 text-blue-600" />
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">GCC Explorer</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900" data-testid="explorer-heading">GCC Explorer</h1>
             <span className="text-xs font-mono bg-blue-50 text-blue-800 px-2 py-0.5 rounded-xs border border-blue-200">
               Database
             </span>
@@ -145,7 +149,8 @@ export const ExplorerView: React.FC<ExplorerViewProps> = ({
           <div className="flex items-center border border-slate-200 rounded-xs bg-slate-50 p-0.5">
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-1.5 rounded-2xs text-xs flex items-center gap-1 transition-colors ${
+              data-testid="btn-grid-view"
+              className={`p-1.5 rounded-2xs text-xs flex items-center gap-1 transition-colors cursor-pointer ${
                 viewMode === 'grid' ? 'bg-white shadow-2xs font-semibold text-slate-900' : 'text-slate-500 hover:text-slate-900'
               }`}
               title="Grid View"
@@ -155,7 +160,8 @@ export const ExplorerView: React.FC<ExplorerViewProps> = ({
             </button>
             <button
               onClick={() => setViewMode('table')}
-              className={`p-1.5 rounded-2xs text-xs flex items-center gap-1 transition-colors ${
+              data-testid="btn-table-view"
+              className={`p-1.5 rounded-2xs text-xs flex items-center gap-1 transition-colors cursor-pointer ${
                 viewMode === 'table' ? 'bg-white shadow-2xs font-semibold text-slate-900' : 'text-slate-500 hover:text-slate-900'
               }`}
               title="Table View"
@@ -178,6 +184,7 @@ export const ExplorerView: React.FC<ExplorerViewProps> = ({
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            data-testid="explorer-search-input"
             placeholder="Search company (e.g. Microsoft, Walmart, Wells Fargo), headquarters, functions..."
             className="w-full pl-10 pr-4 py-2 text-xs bg-slate-50 focus:bg-white border border-slate-200 focus:border-blue-600 rounded-sm focus:outline-hidden text-slate-900 transition-colors"
           />
@@ -191,6 +198,7 @@ export const ExplorerView: React.FC<ExplorerViewProps> = ({
             <select
               value={selectedCity}
               onChange={(e) => setSelectedCity(e.target.value)}
+              data-testid="filter-city-select"
               className="w-full text-xs bg-slate-50 border border-slate-200 rounded-xs p-1.5 focus:border-blue-600 focus:outline-hidden text-slate-800"
             >
               {cityOptions.map((city) => (
@@ -205,6 +213,7 @@ export const ExplorerView: React.FC<ExplorerViewProps> = ({
             <select
               value={selectedIndustry}
               onChange={(e) => setSelectedIndustry(e.target.value)}
+              data-testid="filter-industry-select"
               className="w-full text-xs bg-slate-50 border border-slate-200 rounded-xs p-1.5 focus:border-blue-600 focus:outline-hidden text-slate-800"
             >
               {industryOptions.map((ind) => (
@@ -219,6 +228,7 @@ export const ExplorerView: React.FC<ExplorerViewProps> = ({
             <select
               value={selectedScale}
               onChange={(e) => setSelectedScale(e.target.value)}
+              data-testid="filter-scale-select"
               className="w-full text-xs bg-slate-50 border border-slate-200 rounded-xs p-1.5 focus:border-blue-600 focus:outline-hidden text-slate-800"
             >
               {scaleOptions.map((sc) => (
@@ -233,6 +243,7 @@ export const ExplorerView: React.FC<ExplorerViewProps> = ({
             <select
               value={selectedFunction}
               onChange={(e) => setSelectedFunction(e.target.value)}
+              data-testid="filter-function-select"
               className="w-full text-xs bg-slate-50 border border-slate-200 rounded-xs p-1.5 focus:border-blue-600 focus:outline-hidden text-slate-800"
             >
               {functionKeywords.map((fn) => (
@@ -246,6 +257,7 @@ export const ExplorerView: React.FC<ExplorerViewProps> = ({
             <button
               onClick={resetFilters}
               disabled={!hasActiveFilters}
+              data-testid="btn-reset-filters"
               className={`w-full py-1.5 px-3 rounded-xs text-xs font-mono flex items-center justify-center gap-1.5 border transition-colors ${
                 hasActiveFilters
                   ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-700 cursor-pointer'
@@ -260,8 +272,8 @@ export const ExplorerView: React.FC<ExplorerViewProps> = ({
       </div>
 
       {/* Results Count & Disclaimer */}
-      <div className="flex items-center justify-between text-xs text-slate-500 font-mono">
-        <span>
+      <div className="flex items-center justify-between text-xs text-slate-500 font-mono" data-testid="results-count-container">
+        <span data-testid="results-count">
           Showing <strong>{filteredCompanies.length}</strong> of <strong>{GCC_COMPANIES.length}</strong> tracked enterprises
         </span>
         <span className="hidden sm:inline">
@@ -271,15 +283,16 @@ export const ExplorerView: React.FC<ExplorerViewProps> = ({
 
       {/* Empty State */}
       {filteredCompanies.length === 0 && (
-        <div className="p-12 text-center bg-white rounded-lg border border-slate-200 space-y-3">
+        <div className="p-12 text-center bg-white rounded-lg border border-slate-200 space-y-3" data-testid="empty-results-state">
           <Building2 className="w-10 h-10 text-slate-300 mx-auto" />
-          <h3 className="text-base font-bold text-slate-800">No matching GCC records found</h3>
+          <h3 className="text-base font-bold text-slate-800" data-testid="no-results-heading">No matching GCC records found</h3>
           <p className="text-xs text-slate-500 max-w-md mx-auto">
             Try adjusting your search criteria or resetting filters to browse all verified captive centers.
           </p>
           <button
             onClick={resetFilters}
-            className="px-4 py-2 bg-slate-900 text-white rounded-xs text-xs font-medium hover:bg-slate-800 transition-colors"
+            data-testid="btn-clear-empty-filters"
+            className="px-4 py-2 bg-slate-900 text-white rounded-xs text-xs font-medium hover:bg-slate-800 transition-colors cursor-pointer"
           >
             Clear All Filters
           </button>
@@ -288,22 +301,23 @@ export const ExplorerView: React.FC<ExplorerViewProps> = ({
 
       {/* Grid View */}
       {viewMode === 'grid' && filteredCompanies.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" data-testid="companies-grid">
           {filteredCompanies.map((c) => (
             <div
               key={c.id}
               onClick={() => onSelectCompany(c)}
+              data-testid={`company-card-${c.id}`}
               className="bg-white border border-slate-200 rounded-sm p-4 hover:border-blue-400 hover:shadow-xs transition-all cursor-pointer flex flex-col justify-between group"
             >
               <div>
                 {/* Header */}
                 <div className="flex items-start justify-between gap-2 mb-2">
                   <div>
-                    <h3 className="font-bold text-base text-slate-900 group-hover:text-blue-700 transition-colors">
+                    <h3 className="font-bold text-base text-slate-900 group-hover:text-blue-700 transition-colors" data-testid="company-card-title">
                       {c.company}
                     </h3>
                     <div className="flex items-center gap-2 mt-0.5">
-                      <span className="text-xs font-mono text-slate-500">{c.industry}</span>
+                      <span className="text-xs font-mono text-slate-500" data-testid="company-card-industry">{c.industry}</span>
                       <span className="text-[10px] text-slate-400">• Est. {c.establishedYear}</span>
                     </div>
                   </div>
@@ -313,7 +327,7 @@ export const ExplorerView: React.FC<ExplorerViewProps> = ({
                 {/* Cities */}
                 <div className="flex items-center gap-1.5 text-xs text-slate-600 mb-2.5">
                   <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                  <span className="font-mono text-[11px] truncate">{c.cities.join(', ')}</span>
+                  <span className="font-mono text-[11px] truncate" data-testid="company-card-cities">{c.cities.join(', ')}</span>
                 </div>
 
                 {/* Functions Pills */}
@@ -345,7 +359,7 @@ export const ExplorerView: React.FC<ExplorerViewProps> = ({
                   sourceUrl={c.sourceUrl}
                   compact
                 />
-                <span className="text-blue-600 group-hover:translate-x-0.5 transition-transform inline-flex items-center font-medium shrink-0 ml-2">
+                <span className="text-blue-600 group-hover:translate-x-0.5 transition-transform inline-flex items-center font-medium shrink-0 ml-2" data-testid="company-card-details-btn">
                   Details <ChevronRight className="w-3 h-3 ml-0.5" />
                 </span>
               </div>
@@ -356,9 +370,9 @@ export const ExplorerView: React.FC<ExplorerViewProps> = ({
 
       {/* Table View */}
       {viewMode === 'table' && filteredCompanies.length > 0 && (
-        <div className="bg-white border border-slate-200 rounded-sm shadow-2xs overflow-hidden">
+        <div className="bg-white border border-slate-200 rounded-sm shadow-2xs overflow-hidden" data-testid="companies-table-container">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-700 border-collapse">
+            <table className="w-full text-left text-xs text-slate-700 border-collapse" data-testid="companies-table">
               <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-mono uppercase text-[10px] tracking-wider">
                 <tr>
                   <th className="py-2.5 px-4 font-semibold">Company</th>
@@ -375,10 +389,11 @@ export const ExplorerView: React.FC<ExplorerViewProps> = ({
                   <tr
                     key={c.id}
                     onClick={() => onSelectCompany(c)}
+                    data-testid={`company-row-${c.id}`}
                     className="hover:bg-slate-50/80 cursor-pointer transition-colors"
                   >
                     <td className="py-3 px-4">
-                      <div className="font-bold text-slate-900">{c.company}</div>
+                      <div className="font-bold text-slate-900" data-testid="company-row-title">{c.company}</div>
                       <div className="text-[10px] text-slate-400 font-mono">{c.globalHeadquarters}</div>
                     </td>
                     <td className="py-3 px-3">
@@ -404,7 +419,8 @@ export const ExplorerView: React.FC<ExplorerViewProps> = ({
                           e.stopPropagation();
                           onSelectCompany(c);
                         }}
-                        className="text-xs text-blue-600 hover:text-blue-800 font-medium inline-flex items-center gap-0.5"
+                        data-testid="company-row-inspect-btn"
+                        className="text-xs text-blue-600 hover:text-blue-800 font-medium inline-flex items-center gap-0.5 cursor-pointer"
                       >
                         Inspect <ChevronRight className="w-3 h-3" />
                       </button>
